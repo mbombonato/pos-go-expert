@@ -64,12 +64,12 @@
 
 4. Execute o servidor em outro terminal
    ```
-   go run /cmd/server/main.go
+   go run cmd/server/main.go
    ```
 
 5. Execute os cenários de testes em outro terminal
    ```
-   go run /cmd/test/main.go
+   go run cmd/test/main.go
    ```
 
 ### .env default parameters
