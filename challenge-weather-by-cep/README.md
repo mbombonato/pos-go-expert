@@ -60,6 +60,15 @@
    http://localhost:8080/<CEP>
    ```
 
+### Execução Local via Docker-Compose
+```bash
+docker compose up
+```
+
+```bash
+curl --request GET --url 'http://localhost:8080/?cep=13450402'
+```
+
 ### Execução no Cloud-Run
 1. Abra a URL abaixo:
 
