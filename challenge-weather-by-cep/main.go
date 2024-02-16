@@ -25,6 +25,7 @@ const (
 )
 
 type ViaCepResponse struct {
+	Erro        bool   `json:"erro"`
 	Cep         string `json:"cep"`
 	Logradouro  string `json:"logradouro"`
 	Complemento string `json:"complemento"`
@@ -94,13 +95,17 @@ func handleRequest(c *fiber.Ctx) error {
 
 	url := urlViaCep + "ws/" + cep + "/json"
 	response, err := fetchData(c, url)
-	if err != nil {
+	if err != nil || response == nil {
 		return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "can not find zipcode"})
 	}
 	cepResponse := ViaCepResponse{}
 	err = json.Unmarshal(response, &cepResponse)
 	if err != nil {
 		return c.Status(http.StatusInternalServerError).JSON(fiber.Map{"error": "Error parsing zipcode data"})
+	}
+
+	if cepResponse.Erro {
+		return c.Status(http.StatusNotFound).JSON(fiber.Map{"error": "can not found zipcode"})
 	}
 
 	city := string(cepResponse.Localidade)
