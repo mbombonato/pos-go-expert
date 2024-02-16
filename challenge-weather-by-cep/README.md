@@ -54,24 +54,37 @@
    go run main.go
    ```
 
-4. Abra a url no navegador:
+4. Execute a curl em outro terminal ou abra a url no navegador:
 
    ```bash
+   curl --request GET --url 'http://localhost:8080/<CEP>'
+   ou
    http://localhost:8080/<CEP>
    ```
 
 ### Execução Local via Docker-Compose
-```bash
-docker compose up
-```
+1. Suba o Docker Compose
+   ```bash
+   docker compose up
+   ```
 
-```bash
-curl --request GET --url 'http://localhost:8080/?cep=13450402'
-```
+2. Execute a curl em outro terminal ou abra a url no navegador
+   ```bash
+   curl --request GET --url 'http://localhost:8080/<CEP>'
+   ou
+   http://localhost:8080/<CEP>
+   ```
 
 ### Execução no Cloud-Run
 1. Abra a URL abaixo:
 
    ```bash
-   https://challenge-weather-by-cep-6kxhuyapyq-rj.a.run.app/<CEP>
+   # invalid zip code
+   https://challenge-weather-by-cep-6kxhuyapyq-rj.a.run.app/111
+
+   # zip code not found
+   https://challenge-weather-by-cep-6kxhuyapyq-rj.a.run.app/01153001
+
+   # success
+   https://challenge-weather-by-cep-6kxhuyapyq-rj.a.run.app/13450402
    ```
