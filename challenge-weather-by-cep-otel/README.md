@@ -52,17 +52,25 @@ Após a implementação dos serviços, adicione a implementação do OTEL + Zipk
 - Utilize docker/docker-compose para que possamos realizar os testes de sua aplicação.
 
 ### Execução Local via Docker-Compose
-1. Suba o Docker Compose
+
+1. Clone o repositório e acesse a subpasta do desafio:
+
+   ```bash
+   git clone https://github.com/mbombonato/pos-go-expert.git
+   cd pos-go-expert/challenge-weather-by-cep-otel
+   ```
+   
+2. Suba o Docker Compose
    ```bash
    docker compose up
    ```
 
-2. Execute a curl em outro terminal
+3. Execute a curl em outro terminal
    ```bash
    curl --request POST --url 'http://localhost:8080' -H "Content-Type: application/json" -d '{"cep" : "13450402"}'
    ```
 
-3. Abra o Zipkin no navegador
+4. Abra o Zipkin no navegador
    ```bash
    http://127.0.0.1:9411/zipkin/
    ```
