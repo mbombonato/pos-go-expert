@@ -38,7 +38,7 @@ const (
 )
 
 type ViaCepResponse struct {
-	Erro        bool   `json:"erro"`
+	Erro        string `json:"erro"`
 	Cep         string `json:"cep"`
 	Logradouro  string `json:"logradouro"`
 	Complemento string `json:"complemento"`
@@ -125,31 +125,24 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 	defer span.End()
 
 	url := urlViaCep + "ws/" + cep + "/json"
-	response, err := fetchData(ctx, url)
-	if err != nil || response == nil {
-		fmt.Printf("ERROR: %s\n", err.Error())
-		w.WriteHeader(404)
-		w.Write([]byte("can not find zipcode"))
-		return
-	}
-
+	respCep, err := fetchData(ctx, url)
 	if err != nil {
 		fmt.Printf("ERROR: %s\n", err.Error())
 		w.WriteHeader(500)
-		w.Write([]byte("internal server error"))
+		w.Write([]byte("Error fetching zipcode data"))
 		return
 	}
 
 	cepResponse := ViaCepResponse{}
-	err = json.Unmarshal(response, &cepResponse)
+	err = json.Unmarshal(respCep, &cepResponse)
 	if err != nil {
 		fmt.Printf("ERROR: %s\n", err.Error())
 		w.WriteHeader(500)
-		w.Write([]byte("internal server error"))
+		w.Write([]byte("Error parsing zipcode data"))
 		return
 	}
 
-	if cepResponse.Erro {
+	if cepResponse.Erro == "true" {
 		w.WriteHeader(404)
 		w.Write([]byte("can not find zipcode"))
 		return
@@ -162,7 +155,7 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 	url = urlWeatherApi + "current.json?key=" + weatherApiKey + "&q=" + city + " - " + state + " - Brazil&aqi=no&tides=no"
 	url = strings.Replace(url, " ", "%20", -1)
 
-	response, err = fetchData(ctx, url)
+	respWeather, err := fetchData(ctx, url)
 	if err != nil {
 		fmt.Printf("ERROR: %s\n", err.Error())
 		w.WriteHeader(500)
@@ -170,7 +163,7 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	weatherResponse := WeatherApiResponse{}
-	err = json.Unmarshal(response, &weatherResponse)
+	err = json.Unmarshal(respWeather, &weatherResponse)
 	if err != nil {
 		fmt.Printf("ERROR: %s\n", err.Error())
 		w.WriteHeader(500)
@@ -182,7 +175,7 @@ func handleRequest(w http.ResponseWriter, r *http.Request) {
 	tempF := strconv.FormatFloat(weatherResponse.Current.TempF, 'f', -1, 64)
 	tempK := strconv.FormatFloat(weatherResponse.Current.TempC+273.15, 'f', -1, 64)
 
-	response = []byte(`{ "city: ` + city + `/` + state + `, "temp_C": ` + tempC + `, "temp_F": ` + tempF + `, "temp_K": ` + tempK + ` }`)
+	response := []byte(`{ "city: ` + city + `/` + state + `, "temp_C": ` + tempC + `, "temp_F": ` + tempF + `, "temp_K": ` + tempK + ` }`)
 
 	w.WriteHeader(200)
 	w.Write(response)
